@@ -1,5 +1,25 @@
 local lsp = require("lsp-zero")
-local lsp_config = require("lspconfig")
+local lspconfig = require "lspconfig"
+local configs = require "lspconfig.configs"
+
+
+if not configs.schemals then
+    configs.schemals = {
+        default_config = {
+            filetypes = { 'sd' },
+            cmd = { 'java', '-jar', '/Users/magnus/repos/vespa/integration/schema-language-server/language-server/target/schema-language-server-jar-with-dependencies.jar' },
+            root_dir = lspconfig.util.root_pattern('.')
+        },
+    }
+end
+
+
+vim.filetype.add {
+  extension = {
+    profile = 'sd',
+    sd = 'sd'
+  }
+}
 
 lsp.preset("recommended")
 
@@ -22,8 +42,7 @@ lsp.set_preferences({
 	sign_icons = { }
 })
 
-
-lsp.on_attach(function(client, bufnr)
+local on_attach = function(client, bufnr)
 	local opts = {buffer = bufnr, remap = false}
 	
 	vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
@@ -36,6 +55,11 @@ lsp.on_attach(function(client, bufnr)
 	vim.keymap.set("n", "<leader>rn", function() vim.lsp.buf.rename() end, opts)
 	vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
     vim.keymap.set("n", "<leader>th", function() vim.lsp.buf.typehierarchy() end, opts)
-end)
+end
+lsp.on_attach(on_attach)
 
 lsp.setup()
+-- for some reason the custom client doesn't work with lsp-zero
+lspconfig.schemals.setup{
+    on_attach = on_attach
+}

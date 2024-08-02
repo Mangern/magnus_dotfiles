@@ -95,6 +95,9 @@ return require('packer').startup(function(use)
         }
     })
 
+    use '/usr/local/opt/fzf'
+    use 'junegunn/fzf.vim'
+
 
     --use {
     --    'chipsenkbeil/distant.nvim',
