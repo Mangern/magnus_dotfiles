@@ -107,6 +107,18 @@ return require('packer').startup(function(use)
         run = "make install_jsregexp"
     })
 
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
+
+    -- install without yarn or npm
+    use({
+        "iamcco/markdown-preview.nvim",
+        run = function() vim.fn["mkdp#util#install"]() end,
+    })
 
     --use {
     --    'chipsenkbeil/distant.nvim',
