@@ -59,7 +59,7 @@ vim.keymap.set("n", "<leader>d", "\"+d")
 vim.keymap.set("v", "<leader>d", "\"+d")
 
 vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>fo", function()
     vim.lsp.buf.format()
 end)
 
@@ -179,6 +179,20 @@ plugins = {
             {'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip'},
         }
 
+    },
+    {
+        'nvim-telescope/telescope.nvim', version = '*',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+        },
+        config = function ()
+            local builtin = require('telescope.builtin')
+            vim.keymap.set('n', '<leader>fa', builtin.find_files, {})
+            vim.keymap.set('n', '<leader>fg', builtin.git_files, {})
+            vim.keymap.set('n', '<leader>fs', builtin.live_grep, {})
+            vim.keymap.set("n", "<leader>ds", builtin.lsp_document_symbols, {})
+        end
     }
 }
 
@@ -311,3 +325,18 @@ cmp.setup({
         { name = 'buffer' },
     })
 })
+
+local ls = require("luasnip")
+
+ls.config.set_config({
+    enable_autosnippets = true,
+    store_selection_keys = "<Tab>",
+})
+
+vim.cmd[[
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
+smap <silent><expr> <Tab> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Tab>'
+
+imap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
+smap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
+]]
